@@ -11,7 +11,7 @@ pipeline {
       steps {
         sh '''
           dart --version
-          echo "name: personaje_test_project" > pubspec.yaml
+          echo "name: herencia_dart" > pubspec.yaml
         '''
       }
     }
