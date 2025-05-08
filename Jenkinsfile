@@ -11,11 +11,6 @@ pipeline {
       steps {
         sh '''
           dart --version
-          mkdir -p lib
-          mkdir -p test
-          cp Personaje.dart lib/
-          cp Contenedor.dart lib/
-          cp test.dart test/
           echo "name: personaje_test_project" > pubspec.yaml
         '''
       }
