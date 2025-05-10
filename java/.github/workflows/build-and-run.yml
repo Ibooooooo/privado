@@ -1,1 +1,30 @@
-sf
+name: Implantación App de Spring Boot
+# Este archivo de flujo de trabajo de GitHub Actions se utiliza para compilar y ejecutar una aplicación de Spring Boot.
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Comprobar el código
+      uses: actions/checkout@v3
+
+    - name: JDK 21
+      uses: actions/setup-java@v3
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    - name: Construir con Maven
+      run: mvn clean install
+      working-directory: ./App
+
+    - name: Ejecutar pruebas
+      run: mvn test
+      working-directory: ./App
