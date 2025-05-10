@@ -19,7 +19,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '21'
-          distribution: 'adoptopenjdk'
+          distribution: 'temurin'  # Usa 'temurin' en lugar de 'adoptopenjdk'
 
       - name: Verificar estructura de directorios
         run: ls -R java  # Verifica que el directorio 'java' existe y tiene subdirectorios
