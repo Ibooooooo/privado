@@ -24,18 +24,18 @@ jobs:
           distribution: 'temurin'
 
       - name: Verificar contenido de App
-        run: ls -R App  # Verifica si el pom.xml está en la carpeta 'app'
+        run: ls -R app  # Verifica si el pom.xml está en la carpeta 'app'
 
       - name: Construir con Maven
-        working-directory: App
+        working-directory: app
         run: mvn clean install
 
       - name: Ejecutar Tests
-        working-directory: App
+        working-directory: app
         run: mvn test
 
       - name: Ejecutar aplicación (background)
-        working-directory: App
+        working-directory: app
         run: nohup mvn spring-boot:run &
 
       - name: Esperar y verificar que el servidor responde
