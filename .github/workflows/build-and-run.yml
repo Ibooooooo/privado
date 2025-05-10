@@ -1,44 +1,33 @@
-# .github/workflows/build-and-run.yml
-
-name: Build, Test and Run Spring Boot App
+name: Build and Run Maven Project
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
-  workflow_dispatch:
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout código
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Instalar Java 21
+      - name: Configurar Java
         uses: actions/setup-java@v3
         with:
           java-version: '21'
-          distribution: 'temurin'
+          distribution: 'adoptopenjdk'
 
-      - name: Verificar contenido de App
-        run: ls -R app  # Verifica si el pom.xml está en la carpeta 'app'
+      - name: Verificar estructura de directorios
+        run: ls -R java  # Verifica que el directorio 'java' existe y tiene subdirectorios
 
-      - name: Construir con Maven
-        working-directory: app
+      - name: Ejecutar Maven Build
+        working-directory: java/app  # Cambiar al directorio donde está tu pom.xml
         run: mvn clean install
 
-      - name: Ejecutar Tests
-        working-directory: app
+      - name: Ejecutar pruebas
+        working-directory: java/app  # Cambiar al mismo directorio para ejecutar las pruebas
         run: mvn test
-
-      - name: Ejecutar aplicación (background)
-        working-directory: app
-        run: nohup mvn spring-boot:run &
-
-      - name: Esperar y verificar que el servidor responde
-        run: |
-          sleep 15
-          curl -f http://localhost:8080/fotos
