@@ -1,0 +1,36 @@
+name: Build, Test and Run Spring Boot App
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Instalar Java 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Construir con Maven
+        run: mvn clean install
+
+      - name: Ejecutar Tests
+        run: mvn test
+
+      - name: Ejecutar aplicación (background)
+        run: nohup mvn spring-boot:run &
+
+      - name: Esperar y verificar que el servidor responde
+        run: |
+          sleep 15
+          curl -f http://localhost:8080/fotos
