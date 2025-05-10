@@ -1,4 +1,4 @@
-name: Build and Run Maven Project
+name: Build, Run, and Test Maven Project
 
 on:
   push:
@@ -11,6 +11,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -19,15 +20,21 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '21'
-          distribution: 'temurin'  # Usa 'temurin' en lugar de 'adoptopenjdk'
+          distribution: 'temurin'
 
       - name: Verificar estructura de directorios
         run: ls -R java  # Verifica que el directorio 'java' existe y tiene subdirectorios
 
       - name: Ejecutar Maven Build
-        working-directory: java/app  # Cambiar al directorio donde está tu pom.xml
+        working-directory: java/app
         run: mvn clean install
 
+      - name: Levantar servidor Spring Boot
+        working-directory: java/app
+        run: |
+          nohup mvn spring-boot:run &
+          sleep 30  # Esperar 30 segundos para que el servidor se levante
+
       - name: Ejecutar pruebas
-        working-directory: java/app  # Cambiar al mismo directorio para ejecutar las pruebas
+        working-directory: java/app
         run: mvn test
