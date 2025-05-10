@@ -1,3 +1,5 @@
+# .github/workflows/build-and-run.yml
+
 name: Build, Test and Run Spring Boot App
 
 on:
@@ -22,12 +24,15 @@ jobs:
           distribution: 'temurin'
 
       - name: Construir con Maven
+        working-directory: App
         run: mvn clean install
 
       - name: Ejecutar Tests
+        working-directory: App
         run: mvn test
 
       - name: Ejecutar aplicación (background)
+        working-directory: App
         run: nohup mvn spring-boot:run &
 
       - name: Esperar y verificar que el servidor responde
