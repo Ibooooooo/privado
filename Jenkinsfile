@@ -4,9 +4,16 @@ pipeline {
         skipStagesAfterUnstable()
     }
     stages {
-        stage('Build') {
+        stage('Construcción') {
             steps {
                 echo 'No build step needed for Ruby'
+            }
+        }
+        stage('Ejecutar Main') {
+            steps {
+                dir('code') {
+                    sh 'ruby main.rb'
+                }
             }
         }
         stage('Test') {

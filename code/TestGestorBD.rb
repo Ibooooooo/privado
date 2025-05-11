@@ -55,7 +55,3 @@ class TestGestorBD < Minitest::Test
     assert_equal ordenEsperado, ordenadas
   end
 end
-
-Minitest.after_run do
-  puts "\n ==== Se han completado con éxito (#{Minitest::Runnable.runnables.size}/6) tests. ==== \n"
-end

@@ -23,6 +23,7 @@ class GestorBD
 
   def guardar
     File.open(@archivo, 'w') do |f|
+      puts "📤 Guardando datos en #{@archivo}..."
       @tabla.each do |fila|
         f.puts [fila[:nombre], fila[:edad], fila[:ciudad], fila[:dinero]].join(',')
       end
