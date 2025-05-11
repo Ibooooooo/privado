@@ -12,7 +12,7 @@ pipeline {
         stage('Ejecutar Main') {
             steps {
                 dir('code') {
-                    sh 'ruby main.rb'
+                    sh 'ruby Main.rb'
                 }
             }
         }
