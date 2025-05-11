@@ -1,7 +1,9 @@
 require_relative 'GestorBD'
 
 # Inicialización
-bd = GestorBD.new("code\\BD.txt")
+bd_path = File.join(__dir__, 'BD.txt')
+File.delete(bd_path) if File.exist?(bd_path)
+bd = GestorBD.new(bd_path)
 
 puts "Añadimos a más clientes..."
 bd.insertar({ nombre: "Ana", edad: 45, ciudad: "Madrid", dinero: 1500.0 })

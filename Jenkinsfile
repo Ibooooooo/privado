@@ -12,7 +12,6 @@ pipeline {
         stage('Ejecutar Main') {
             steps {
                 dir('code') {
-                    sh 'rm -f BD.txt'
                     sh 'ruby Main.rb'
                 }
             }
