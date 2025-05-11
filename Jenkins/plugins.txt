@@ -1,3 +1,0 @@
-blueocean
-docker-workflow
-git
