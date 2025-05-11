@@ -1,0 +1,13 @@
+Ana,28,Madrid,1540.5
+Luis,35,Barcelona,980.0
+Marta,42,Madrid,2350.75
+Jorge,31,Valencia,870.2
+Lucía,25,Sevilla,1540.0
+Carlos,38,Zaragoza,660.0
+Laura,29,Málaga,1920.1
+Andrés,44,Bilbao,1100.0
+Carmen,36,Granada,845.5
+Raúl,22,Vigo,510.0
+Sara,33,Madrid,2199.99
+Pedro,27,Toledo,720.0
+Clara,34,Madrid,1400.5
