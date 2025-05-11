@@ -1,1 +1,0 @@
-Pedro,27,Barcelona,600.0
