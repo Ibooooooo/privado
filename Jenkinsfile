@@ -12,7 +12,8 @@ pipeline {
         stage('Ejecutar Main') {
             steps {
                 dir('code') {
-                    sh 'rm -f BD.txt && touch BD.txt'
+                    sh 'ls -l'
+                    sh 'cat BD.txt || echo "No existe BD.txt"'
                     sh 'ruby Main.rb'
                 }
             }
