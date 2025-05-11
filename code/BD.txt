@@ -1,1 +1,4 @@
 Pedro,27,Barcelona,600.0
+Ana,45,Madrid,1700.0
+Marta,33,Bilbao,1100.0
+Carlos,39,Sevilla,800.0
