@@ -12,7 +12,7 @@ pipeline {
         stage('Ejecutar Main') {
             steps {
                 dir('code') {
-                    sh 'rm -f BD.txt && touch BD.txt'
+                    sh 'rm -f BD.txt'
                     sh 'ruby Main.rb'
                 }
             }
