@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  jenkins:
+    build: .
+    container_name: jenkins-container
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+    networks:
+      default:
+        external:
+          name: host
+    dns:
+      - 8.8.8.8
+    volumes:
+      - /var/jenkins_home
