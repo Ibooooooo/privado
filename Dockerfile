@@ -11,12 +11,13 @@ RUN apt-get update && apt-get install -y \
     git \
     docker.io \
     wget \
+    bash \
     && apt-get clean
 
-# Instala SDKMAN y Kotlin
+# Instala SDKMAN y Kotlin sin necesidad de source ~/.bashrc
 RUN curl -s https://get.sdkman.io | bash && \
-    echo "source \$HOME/.sdkman/bin/sdkman-init.sh" >> ~/.bashrc && \
-    source ~/.bashrc && \
+    export SDKMAN_DIR="$HOME/.sdkman" && \
+    source "$SDKMAN_DIR/bin/sdkman-init.sh" && \
     sdk install kotlin
 
 # Instala JUnit 5 y lo coloca en /opt/junit
