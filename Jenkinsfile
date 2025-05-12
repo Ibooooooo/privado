@@ -8,23 +8,23 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                dir('kotlin/src') {
-                    sh 'kotlinc src/Main.kt src/Animal.kt -include-runtime -d ../app.jar'
+                dir('src') {
+                    sh 'kotlinc Main.kt Animal.kt -include-runtime -d ../app.jar'
                 }
             }
         }
 
         stage('Test') {
             steps {
-                dir('kotlin/test') {
-                    sh 'kotlinc -cp ../app.jar AnimalTest.kt -include-runtime -d test.jar && java -jar test.jar'
+                dir('test') {
+                    sh 'kotlinc -cp ../app.jar AnimalTest.kt -include-runtime -d ../test.jar && java -jar ../test.jar'
                 }
             }
         }
 
         stage('Deliver') {
             steps {
-                archiveArtifacts artifacts: 'kotlin/app.jar', fingerprint: true
+                archiveArtifacts artifacts: 'app.jar', fingerprint: true
             }
         }
     }
