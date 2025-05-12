@@ -3,7 +3,7 @@ FROM jenkins/jenkins:lts
 # Permite el uso de sudo dentro del contenedor
 USER root
 
-# Instala dependencias básicas, Docker CLI, Kotlin Compiler, SDKMAN y JUnit
+# Instala dependencias básicas, Docker CLI, Kotlin Compiler, JUnit y SDKMAN
 RUN apt-get update && apt-get install -y \
     sudo \
     curl \
@@ -14,11 +14,13 @@ RUN apt-get update && apt-get install -y \
     bash \
     && apt-get clean
 
-# Instala SDKMAN y Kotlin sin necesidad de source ~/.bashrc
-RUN curl -s https://get.sdkman.io | bash && \
-    export SDKMAN_DIR="$HOME/.sdkman" && \
-    source "$SDKMAN_DIR/bin/sdkman-init.sh" && \
-    sdk install kotlin
+# Descarga y configura Kotlin directamente
+RUN curl -LO https://github.com/JetBrains/kotlin/releases/download/v1.9.22/kotlin-compiler-1.9.22.zip && \
+    unzip kotlin-compiler-1.9.22.zip && \
+    mv kotlinc /opt/kotlinc && \
+    ln -s /opt/kotlinc/bin/kotlinc /usr/local/bin/kotlinc && \
+    ln -s /opt/kotlinc/bin/kotlin /usr/local/bin/kotlin && \
+    rm kotlin-compiler-1.9.22.zip
 
 # Instala JUnit 5 y lo coloca en /opt/junit
 RUN mkdir -p /opt/junit && \
@@ -37,11 +39,6 @@ RUN usermod -aG docker jenkins
 
 # Crea el directorio de trabajo
 WORKDIR /app
-
-# Da permisos de ejecución
-RUN chmod +x /opt/kotlinc/bin/kotlinc && \
-    ln -s /opt/kotlinc/bin/kotlinc /usr/local/bin/kotlinc && \
-    ln -s /opt/kotlinc/bin/kotlin /usr/local/bin/kotlin
 
 # Exponemos los puertos para Jenkins
 EXPOSE 8080
