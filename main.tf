@@ -62,6 +62,12 @@ resource "docker_container" "jenkins_kotlin" {
     read_only      = true
   }
 
+  volumes {
+    host_path = abspath("${path.module}/lib")
+    container_path = "/opt/junit"
+    read_only      = true
+  }
+
   networks_advanced {
     name = docker_network.jenkins_net_kotlin.name
   }
