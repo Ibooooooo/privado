@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     docker.io \
+    wget \
     && curl -LO https://github.com/JetBrains/kotlin/releases/download/v1.9.22/kotlin-compiler-1.9.22.zip \
     && unzip kotlin-compiler-1.9.22.zip \
     && mv kotlinc /opt/kotlinc \
@@ -17,6 +18,9 @@ RUN apt-get update && apt-get install -y \
     && ln -s /opt/kotlinc/bin/kotlin /usr/local/bin/kotlin \
     && rm kotlin-compiler-1.9.22.zip \
     && apt-get clean
+
+# Crear el directorio para JUnit
+RUN mkdir -p /opt/junit
 
 # Descargar JUnit 5
 RUN wget -L -O /opt/junit/junit-jupiter-api-5.7.0.jar https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.7.0/junit-jupiter-api-5.7.0.jar \
