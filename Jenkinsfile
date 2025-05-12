@@ -1,30 +1,35 @@
 pipeline {
     agent any
 
-    options {
-        skipStagesAfterUnstable()
+    environment {
+        KOTLIN_HOME = '/opt/kotlinc'
+        JUNIT_LIB = '/opt/junit'
     }
 
     stages {
-        stage('Build') {
+        stage('Compilar app') {
             steps {
-                dir('src') {
-                    sh 'kotlinc Main.kt Animal.kt -include-runtime -d ../app.jar'
-                }
+                sh '''
+                    mkdir -p build
+                    ${KOTLIN_HOME}/bin/kotlinc src/*.kt -include-runtime -d build/app.jar
+                '''
             }
         }
 
-        stage('Test') {
+        stage('Compilar tests') {
             steps {
-                dir('test') {
-                    sh 'kotlinc -cp ../app.jar AnimalTest.kt -include-runtime -d ../test.jar && java -jar ../test.jar'
-                }
+                sh '''
+                    ${KOTLIN_HOME}/bin/kotlinc -cp "build/app.jar:${JUNIT_LIB}/*" test/*.kt -include-runtime -d build/test.jar
+                '''
             }
         }
 
-        stage('Deliver') {
+        stage('Ejecutar tests') {
             steps {
-                archiveArtifacts artifacts: 'app.jar', fingerprint: true
+                sh '''
+                    ${KOTLIN_HOME}/bin/kotlin -cp "build/test.jar:build/app.jar:${JUNIT_LIB}/*" \
+                    org.junit.platform.console.ConsoleLauncher --select-class AnimalTest
+                '''
             }
         }
     }
