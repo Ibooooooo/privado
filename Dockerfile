@@ -3,7 +3,7 @@ FROM jenkins/jenkins:lts
 # Permite el uso de sudo dentro del contenedor
 USER root
 
-# Instala dependencias básicas, Docker CLI y Kotlin Compiler
+# Instala dependencias básicas, Docker CLI, Kotlin Compiler y JUnit
 RUN apt-get update && apt-get install -y \
     sudo \
     curl \
@@ -17,6 +17,11 @@ RUN apt-get update && apt-get install -y \
     && ln -s /opt/kotlinc/bin/kotlin /usr/local/bin/kotlin \
     && rm kotlin-compiler-1.9.22.zip \
     && apt-get clean
+
+# Descargar JUnit 5
+RUN curl -L -o /opt/junit/junit-jupiter-api-5.7.0.jar https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-api/5.7.0/junit-jupiter-api-5.7.0.jar \
+    && curl -L -o /opt/junit/junit-jupiter-engine-5.7.0.jar https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/5.7.0/junit-jupiter-engine-5.7.0.jar \
+    && curl -L -o /opt/junit/junit-platform-launcher-1.7.0.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-launcher/1.7.0/junit-platform-launcher-1.7.0.jar
 
 # Da permisos a Jenkins para usar Docker
 RUN usermod -aG docker jenkins
