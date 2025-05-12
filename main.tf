@@ -24,10 +24,11 @@ resource "docker_volume" "docker_certs_kotlin" {
 resource "docker_image" "jenkins_custom_kotlin" {
   name = "jenkins-custom-kotlin:latest"
   build {
-    context    = "${path.module}/."
-    dockerfile = "Dockerfile"
+    context    = path.module
+    dockerfile = "${path.module}/Dockerfile"
   }
 }
+
 
 resource "docker_container" "jenkins_kotlin" {
   name  = "jenkins_kotlin"

@@ -9,7 +9,7 @@ pipeline {
         stage('Build') {
             steps {
                 dir('kotlin/src') {
-                    sh 'kotlinc Main.kt Animal.kt -include-runtime -d ../app.jar'
+                    sh 'kotlinc src/Main.kt src/Animal.kt -include-runtime -d ../app.jar'
                 }
             }
         }
