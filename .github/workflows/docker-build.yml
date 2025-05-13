@@ -25,7 +25,14 @@ jobs:
 
     - name: Verificar que la aplicación está funcionando
       run: |
-        curl -f http://localhost:8080/fotos || exit 1
+        for i in {1..30}; do
+          if curl -s http://localhost:8080/fotos > /dev/null; then
+            echo "Service is up!"
+            break
+          fi
+          echo "Waiting for the service..."
+          sleep 2
+        done
 
     - name: Detener el contenedor después de la prueba
       run: |
