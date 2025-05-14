@@ -4,8 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Verificando el repositorio Git...'
-                sh 'git status'
+                checkout scm
             }
         }
 
