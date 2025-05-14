@@ -42,5 +42,7 @@ RUN curl -sSLO https://github.com/JetBrains/kotlin/releases/download/v${KOTLIN_V
 # -------------------------------
 # Instalar plugins con jenkins-plugin-cli (viene preinstalado)
 # -------------------------------
-RUN jenkins-plugin-cli --plugins \
-    "blueocean docker-workflow git workflow-aggregator"
+COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
+RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt
+
+USER jenkins
