@@ -1,7 +1,0 @@
-workflow-aggregator
-blueocean
-docker-workflow
-git
-credentials-binding
-pipeline-github-lib
-github-branch-source
