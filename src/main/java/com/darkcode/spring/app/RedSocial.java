@@ -1,4 +1,5 @@
 package com.darkcode.spring.app;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -7,6 +8,7 @@ public class RedSocial
 {
     private final List<Foto> fotos;
 
+    @Autowired
     public RedSocial(List<Foto> fotos) 
     {
         this.fotos = fotos;
