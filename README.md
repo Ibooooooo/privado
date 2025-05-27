@@ -1,9 +1,7 @@
 
 # Ejemplo de Inyección de Dependencias con Spring en Java
 
-Este ejemplo ilustra una red social simple construida con **Spring Boot** para mostrar el uso de **Inyección de Dependencias** en Java. En esta red social, los usuarios pueden publicar fotos clasificadas por tipo: `Ocio`, `Trabajo` y `Arte`.
-
-La idea central es mostrar cómo **Spring administra e inyecta objetos automáticamente**, utilizando diversas anotaciones como `@Component`, `@Autowired`, `@Bean`, `@Configuration` y `@SpringBootTest`.
+Este ejemplo ilustra una red social simple construida con **Spring Framework** para mostrar el uso de **Inyección de Dependencias** en Java. En esta red social, los usuarios pueden publicar fotos clasificadas por tipo: `Ocio`, `Trabajo` y `Arte`.
 
 ## Implementación
 ---
@@ -32,7 +30,6 @@ Implementada por:
 * OcioFoto.java
 * ArteFoto.java
 * TrabajoFoto.java
-* FotoComponent.java
 
 ### `OcioFoto, ArteFoto y TrabajoFoto.java`
 
@@ -63,38 +60,12 @@ public class OcioFoto implements Foto
 
 `ArteFoto.java` y `TrabajoFoto.java` son prácticamente idénticas a `OcioFoto.java` la principal diferencia es que el método **getImagen()** devuelve una letra dependiendo del tipo de la foto.
 
-### `FotoComponent.java`
-
-```java
-package com.darkcode.spring.app;
-
-import org.springframework.stereotype.Component;
-
-@Component
-public class FotoComponent implements Foto 
-{
-    @Override
-    public String getNombre() 
-    {
-        return "Foto credada por Spring automáticamente";
-    }
-
-    @Override
-    public char getImagen() 
-    {
-        return 'S';
-    }
-}
-
-```
-
-Clase especial anotada con `@Component` que representa una foto automática del sistema.
-Se utiliza `@Component` para registrar automáticamente una instancia de tipo `Foto` en el contexto de Spring.
 
 ### `RedSocial.java`
 
 ```java
 package com.darkcode.spring.app;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -103,6 +74,7 @@ public class RedSocial
 {
     private final List<Foto> fotos;
 
+    @Autowired
     public RedSocial(List<Foto> fotos) 
     {
         this.fotos = fotos;
@@ -130,98 +102,170 @@ public class RedSocial
     }   
 }
 ```
-Clase que contiene una lista de fotos y un método para mostrarlas.
-La anotación `@Service` en Spring se utiliza para marcar una clase como un componente de servicio, es decir, 
-Spring detecta automáticamente esta clase durante el escaneo de paquetes y la registra en el contenedor como un **bean**, lo que permite que sea **inyectada en otras partes de la aplicación**.
-
-### `FotoConfig.java`
-
-```java
-package com.darkcode.spring.app;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-@Configuration
-public class FotoConfig 
-{
-    @Bean
-    public Foto fotoOcio1() 
-    {
-        return new OcioFoto("Vacaciones en la playa");
-    }
-
-    @Bean
-    public Foto fotoTrabajo1() 
-    {
-        return new TrabajoFoto("Presentación en la empresa");
-    }
-
-    @Bean
-    public Foto fotoArte1()
-    {
-        return new ArteFoto("Pintura surrealista");
-    }
-
-    @Bean
-    public Foto fotoOcio2() 
-    {
-        return new OcioFoto("Excursión al bosque");
-    }
-
-    @Bean
-    public Foto fotoTrabajo2() 
-    {
-        return new TrabajoFoto("Proyecto en equipo");
-    }
-
-    @Bean
-    public Foto fotoArte2() 
-    {
-        return new ArteFoto("Exposición de arte moderno");
-    }
-}
-```
-
-La clase **FotoConfig** es una clase de configuración de Spring que define beans para los diferentes tipos de Foto. La anotación `@Configuration` al inicio de la clase indica a Spring que contiene las definiciones de los **Beans**. Junto a `@Bean` le indicamos a Spring *explícitamente* los objetos `Foto` que debe gestionar.
+La clase RedSocial es un componente de servicio (anotado con `@Service`) que gestiona una colección de objetos Foto, los cuales representan diferentes tipos de imágenes.
+Utilizamos `@Autowired` para que Spring realice la inyección automática de las fotos en su constructor. 
+Tiene un método **mostrarFotos()** que genera una representación visual (en HTML simple) de cada foto.
 
 ### `RedSocialController.java`
 
 ```java
 package com.darkcode.spring.app;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@RestController
+@RestController           
 public class RedSocialController 
 {
-    @Autowired
-    private RedSocial redSocial;
+    private final RedSocial redSocial;
 
-    @GetMapping("/fotos") // Asocia la ruta /fotos con el método
+    public RedSocialController(RedSocial redSocial) {
+        this.redSocial = redSocial;      
+    }
+
+    @GetMapping("/fotos")
     public String mostrarFotosWeb() 
     {
         return redSocial.mostrarFotos();
     }
 }
+
 ```
 
 Controlador web con un endpoint que devuelve el resultado de `mostrarFotos()`.
+
+
 La anotación `@RestController` le dice a Spring que esta clase es un controlador web y que todas las respuestas de sus métodos deben enviarse directamente como el cuerpo de la respuesta HTTP.
-Con `@Autowired` inyectamos dependencias de forma automática. Gracias a que `RedSocial` está anotada con `@Service`, Spring la detecta y la puede inyectar aquí.
-Y con `@GetMapping("/fotos")` mapeamos solicitudes HTTP GET al método **mostrarFotosWeb()**.
+Con `@GetMapping("/fotos")` mapeamos solicitudes HTTP GET al método **mostrarFotosWeb()**.
+
+### `AppConfig.java`
+
+```java
+package com.darkcode.spring.app;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.*;
+import java.util.*;
+
+@Configuration
+@PropertySource("classpath:application.properties")
+public class AppConfig 
+{
+    @Bean
+    public List<Foto> fotos(
+            @Value("#{'${foto.ocio}'.split(',')}")  List<String> ocio,
+            @Value("#{'${foto.trabajo}'.split(',')}") List<String> trabajo,
+            @Value("#{'${foto.arte}'.split(',')}")    List<String> arte) 
+    {
+        List<Foto> lista = new ArrayList<>();
+        ocio   .forEach(n -> lista.add(new OcioFoto(n.trim())));
+        trabajo.forEach(n -> lista.add(new TrabajoFoto(n.trim())));
+        arte   .forEach(n -> lista.add(new ArteFoto(n.trim())));
+        return lista;
+    }
+
+    @Bean
+    public RedSocial redSocial(List<Foto> fotos)
+    {
+        return new RedSocial(fotos);
+    }
+
+    @Bean
+    public RedSocialController redSocialController(RedSocial servicio) 
+    {
+        return new RedSocialController(servicio);
+    }
+}
+```
+
+La clase `AppConfig` es una clase de configuración de Spring (anotada con `@Configuration`) que define explícitamente los **beans** utilizados en la aplicación. También carga propiedades desde un archivo externo usando `@PropertySource`.
+
+Lee los valores definidos en el archivo `application.properties`, donde se especifican listas de nombres para las distintas categorías de fotos (foto.ocio, foto.trabajo, foto.arte).
+
+* Método fotos(...):
+    - Utiliza las propiedades cargadas para crear objetos de tipo OcioFoto, TrabajoFoto y ArteFoto.
+
+    - Devuelve una lista de objetos Foto con todos ellos.
+
+    - Esta lista será inyectada automáticamente en otros componentes gracias a Spring.
+
+* Bean RedSocial:
+
+    - Declara una instancia de **RedSocial** inyectándole la lista de fotos generada por el método anterior.
+
+* Bean RedSocialController:
+
+    - Crea un controlador pasando la instancia de **RedSocial**, lo que permite acceder a la lógica de negocio desde el controlador web.
+
+### `application.properties`
+
+El archivo `application.properties` se utiliza para configurar los nombres de las fotos que se cargarán automáticamente al iniciar la aplicación.
+
+Se encuentra en `src/main/resources/` y contiene lo siguiente:
+```bash
+spring.application.name=app
+
+foto.ocio=Vacaciones en la playa,Excursión al bosque
+foto.trabajo=Presentación en la empresa,Proyecto en equipo
+foto.ocio=Excursión a la montaña
+foto.arte=Pintura surrealista,Exposición de arte moderno
+```
 
 ### `AppApplicationTests.java`
 
-Test con `@SpringBootTest` que verifica que las fotos se inyectan correctamente.
+```java
+package com.darkcode.spring.app;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class AppApplicationTests 
+{
+    private RedSocial redSocial;
+
+    @BeforeEach
+    void setUp() {
+        // Carga el contexto Spring desde una clase de configuración
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        redSocial = context.getBean(RedSocial.class);
+    }
+
+    @Test
+    void contextLoads() 
+    {
+        assertThat(redSocial).isNotNull();
+    }
+
+    @Test
+    void todasLasFotosEstanInyectadas() 
+    {
+        List<Foto> fotos = redSocial.getFotos();
+
+        assertThat(fotos).isNotEmpty();
+
+        boolean tieneOcio = fotos.stream().anyMatch(f -> f instanceof OcioFoto);
+        boolean tieneTrabajo = fotos.stream().anyMatch(f -> f instanceof TrabajoFoto);
+        boolean tieneArte = fotos.stream().anyMatch(f -> f instanceof ArteFoto);
+
+        assertThat(tieneOcio).isTrue();
+        assertThat(tieneTrabajo).isTrue();
+        assertThat(tieneArte).isTrue();
+    }
+}
+```
+
+La clase `AppApplicationTests` valida que la aplicación se configure correctamente y que las dependencias principales estén inyectadas por Spring.
+Se ha usado `JUnit 5` y `AssertJ`.
 
 ## Implantación
 ---
 
-- Para realizar los **test** y comprobar que se levanta la app en`http://localhost:8080/fotos`:
+- Para realizar los **test** y comprobar que se levanta la app en`http://localhost:8080`:
     1. En GitHub, ve a la sección **Actions**
     2. Selecciona en la barra lateral izquierda: `inyeccion.java-RITCHIE`
     3. Dale a **run workflow** y selecciona el botón verde donde pone **run workflow**
@@ -231,11 +275,10 @@ Test con `@SpringBootTest` que verifica que las fotos se inyectan correctamente.
 docker build -t redsocial-app .
 docker run -p 8080:8080 redsocial-app
 ```
-Al acceder a `http://localhost:8080/fotos` debería aparecer las fotos publicadas.
+Al acceder a `http://localhost:8080` debería aparecer las fotos publicadas.
 
 - Para borrarlo (limpieza) haz `Ctrl+C` en la terminal y ejecuta:
 ```bash
 docker rm $(docker ps -a -q --filter ancestor=redsocial-app) 2>/dev/null
 docker rmi redsocial-app
 ```
-

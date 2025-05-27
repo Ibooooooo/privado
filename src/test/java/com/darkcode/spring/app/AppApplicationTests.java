@@ -21,12 +21,14 @@ class AppApplicationTests
     }
 
     @Test
-    void contextLoads() {
+    void contextLoads() 
+    {
         assertThat(redSocial).isNotNull();
     }
 
     @Test
-    void todasLasFotosEstanInyectadas() {
+    void todasLasFotosEstanInyectadas() 
+    {
         List<Foto> fotos = redSocial.getFotos();
 
         assertThat(fotos).isNotEmpty();
