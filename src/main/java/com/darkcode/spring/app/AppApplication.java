@@ -25,8 +25,13 @@ public class AppApplication
         server.setHandler(handler);
 
         /* 4. Arrancar */
-        server.start();
-        System.out.println("Servidor iniciado en http://localhost:8080");
-        server.join();
+        try {
+            server.start();
+            server.join();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            server.destroy();
+        }
     }
 }
