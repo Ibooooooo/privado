@@ -9,7 +9,7 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <name>redsocial</name>
-    <description>Proyecto de Red Social con Spring Framework (sin Boot)</description>
+    <description>Proyecto de Red Social con Spring Framework</description>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -27,6 +27,13 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>5.3.33</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Servidor Jetty embebido -->
