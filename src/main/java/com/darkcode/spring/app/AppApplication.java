@@ -9,22 +9,22 @@ public class AppApplication
 {
     public static void main(String[] args) throws Exception 
     {
-        /* 1. Crear contexto Spring y registrar configuración */
+        // Crear contexto Spring y registrar configuración 
         AnnotationConfigWebApplicationContext ctx =new AnnotationConfigWebApplicationContext();
-        ctx.register(AppConfig.class);          // tu clase @Configuration
+        ctx.register(AppConfig.class);          // clase @Configuration
         ctx.scan("com.darkcode.spring.app");    // para que detecte @Component
         ctx.refresh();
 
-        /* 2. Configurar DispatcherServlet */
+        // Configurar DispatcherServlet
         DispatcherServlet servlet = new DispatcherServlet(ctx);
 
-        /* 3. Montar Jetty */
+        // Montar Jetty server 
         Server server = new Server(8080);
         ServletContextHandler handler = new ServletContextHandler();
         handler.addServlet(new ServletHolder(servlet), "/*");
         server.setHandler(handler);
 
-        /* 4. Arrancar */
+        // Arrancamos el servidor
         try {
             server.start();
             server.join();
