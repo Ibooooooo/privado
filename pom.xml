@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
@@ -7,58 +7,75 @@
     <groupId>com.darkcode.spring</groupId>
     <artifactId>redsocial</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-
     <name>redsocial</name>
-    <description>Proyecto de Red Social con Spring Framework</description>
+    <description>Proyecto Red Social con Spring Framework y Jetty</description>
 
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <java.version>21</java.version>
+        <spring.version>5.3.29</spring.version>
+        <jetty.version>9.4.53.v20231009</jetty.version>
+        <javax.servlet.version>4.0.1</javax.servlet.version>
     </properties>
 
     <dependencies>
+        <!-- Spring Context (Core y DI) -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>5.3.33</version>
+            <version>${spring.version}</version>
         </dependency>
 
+        <!-- Spring Web MVC -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>5.3.33</version>
+            <version>${spring.version}</version>
         </dependency>
 
+        <!-- Servlet API (provided scope porque la provee el servidor Jetty) -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.1</version>
+            <version>${javax.servlet.version}</version>
             <scope>provided</scope>
         </dependency>
 
-        <!-- Servidor Jetty embebido -->
+        <!-- Jetty Server -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-            <version>11.0.20</version>
+            <version>${jetty.version}</version>
         </dependency>
+
+        <!-- Jetty Servlet support -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
-            <version>11.0.20</version>
+            <version>${jetty.version}</version>
         </dependency>
 
-        <!-- Soporte para leer application.properties -->
+        <!-- Para testing (opcional) -->
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-            <version>5.3.33</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Plugin para generar JAR ejecutable -->
+            <!-- Plugin para compilar Java 21 -->
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+
+            <!-- Plugin para crear JAR ejecutable -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -66,8 +83,6 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
                             <mainClass>com.darkcode.spring.app.AppApplication</mainClass>
                         </manifest>
                     </archive>
