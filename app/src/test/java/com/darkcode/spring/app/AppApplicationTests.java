@@ -1,32 +1,34 @@
 package com.darkcode.spring.app;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-class AppApplicationTests 
-{
-    @Autowired
+class AppApplicationTests {
+
     private RedSocial redSocial;
 
+    @BeforeEach
+    void setUp() {
+        // Carga el contexto Spring desde una clase de configuración
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        redSocial = context.getBean(RedSocial.class);
+    }
+
     @Test
-    void contextLoads() 
-	{
-        // Nos aseguramos que la red social fue inyectada correctamente
+    void contextLoads() {
         assertThat(redSocial).isNotNull();
     }
 
     @Test
-    void todasLasFotosEstanInyectadas() 
-	{
+    void todasLasFotosEstanInyectadas() {
         List<Foto> fotos = redSocial.getFotos();
 
-        // Esperamos al menos 1 foto por tipo
         assertThat(fotos).isNotEmpty();
 
         boolean tieneOcio = fotos.stream().anyMatch(f -> f instanceof OcioFoto);
